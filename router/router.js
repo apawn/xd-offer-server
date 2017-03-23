@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-22 12:04:58
+ * @Last Modified time: 2017-03-23 12:13:20
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -45,52 +45,93 @@ export var signIn = function (req, res, next) {
                 })
             }
         });
-}
+};
 
-
-export var signUp = function (req, res, next) { }
+// 注册,这个最难搞 !!!
+export var signUp = function (req, res, next) { };
 export var signOut = function (req, res, next) {
     req.session.user = null;
+};
+
+export var getCompaniesCount = (req, res, next) => {
+    var count = Company.count().then(count => {
+        res.send(count);
+    }).catch(err => {
+        res.send(0);
+    });
+};
+
+export var getCurrentPage = (req, res, next) => {
+    var page = req.body.page,
+        onePageCount = 7;
+    Company.where({}).skip(onePageCount * (page - 1)).limit(onePageCount).then(docs => {
+        res.send(docs);
+    }).catch(err => {
+        res.send(null);
+    });
+
+};
+
+// 投递简历   这里需要引入 socket.io
+export var delivery = (req, res, next) => {
+    var companyEmail = req.body.companyEmail,
+        user = req.session.user;
+    Company.findOne({ email: companyEmail }).then(doc => {
+        // 得到这个公司
+        doc.update();
+    }).catch(err => {
+
+    });
+};
+
+export var invite = (req, res, next) => {
+    var company = req.session.company,
+        studentEmail = req.body.email;
+
+    Student.find({ email: studentEmail }).then(doc => {
+        //doc
+    }).catch(err => {
+
+    })
 }
 
 
 
 
+var Company = new mongoose.Schema({
+    name: String,        // 公司名
+    desc: String,
+    password: String,    // 密码
+    path: String,         // 招聘简章路径
+    email: String,       // 邮箱
+    phone: String,      // 电话
+    location: [String],  // 工作地点
+    number: Number,      // 招聘人数
+    position: [{ name: String, job: String, salary: String }],  // 岗位,职责&要求  薪水
+    invitation: [{ student: String, position: String, time: Date }],    //  发出的邀请
+    received: [{ student: String, position: String, time: Date }],     // 接受到的邀请
+    message: [{ Content: String, time: Date, hasread: Boolean }],   //  content ,date ,has read
+    comments: [{ content: String, time: Date, author: String }]
+})
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // name:String,
-    // password:String,
-    // birthday:Date,
-    // gender:Number,
-    // email:String,
-    // phone:String,
-    // speciality:String,
-    // skill:[String],
-    // prizes:[{String,Date}], // include string and date Schema.Types.Mixed
-    // experience:[{String,Date,Date,String}],  // include company startdate, endDate, main work.
-    // introduction:String,
-    // resumePath:String,
-    // //  private 
-    // resumeDelivered:[{String,String}] ,  // the companies has delivered resume, include company ,job
-    // getInvations:[{String,String}]  ,    // the companies which student has get invations from , include company ,job
-    // message:[{String,Date,Boolean}],        // content date hasRead 
+var Student = new mongoose.Schema({
+    name: String,
+    password: String,
+    birthday: Date,
+    gender: Number,
+    email: String,
+    phone: String,
+    speciality: String,
+    skill: [String],
+    prizes: [{ content: String, time: Date }], // include string and date Schema.Types.Mixed
+    experience: [{ content: String, start: Date, end: Date, mainwork: String }],  // include company startdate, endDate, main work.
+    introduction: String,
+    resumePath: String,
+    //  private 
+    resumeDelivered: [{ name: String, position: String, time: Date }],  // the companies has delivered resume, include company ,job
+    getInvations: [{ company: String, position: String, time: Date }],    // the companies which student has get invations from , include company ,job
+    message: [{ content: String, time: Date, hasread: Boolean }],        // content date hasRead 
+    comments: [{ content: String, time: Date, company: "" }]
+})

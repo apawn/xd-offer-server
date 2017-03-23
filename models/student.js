@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-20 10:33:36 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-22 12:30:41
+ * @Last Modified time: 2017-03-23 12:13:02
  */
 
 import mongoose from 'mongoose';
@@ -25,8 +25,7 @@ var Student = new mongoose.Schema({
     resumeDelivered: [{ name: String, position: String, time: Date }],  // the companies has delivered resume, include company ,job
     getInvations: [{ company: String, position: String, time: Date }],    // the companies which student has get invations from , include company ,job
     message: [{ content: String, time: Date, hasread: Boolean }],        // content date hasRead 
-
-
+    comments: [{ content: String, time: Date, company: "" }]
 })
 
 export default mongoDb.model('student', Student);
