@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-23 18:11:12
+ * @Last Modified time: 2017-03-24 12:41:34
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -60,14 +60,13 @@ export var getCompaniesCount = (req, res, next) => {
 };
 
 export var getCurrentPage = (req, res, next) => {
-    var page = req.query.page - 0,
+    var page = req.body.page - 0,
         onePageCount = 7;
+
     if (page < 1) {
         page = 1;
     }
-
     Company.find({}).skip(onePageCount * (page - 1)).limit(onePageCount).then(docs => {
-        console.log(docs);
         res.json(docs);
     }).catch(err => {
         res.json(null);

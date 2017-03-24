@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-20 14:13:46 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-23 18:02:14
+ * @Last Modified time: 2017-03-24 09:53:44
  */
 
 import mongoose from 'mongoose';
@@ -26,5 +26,6 @@ var Company = new mongoose.Schema({
 
 // 这里真是一个大坑
 export default mongoDb.model('company', Company, 'company');
+
 
 
