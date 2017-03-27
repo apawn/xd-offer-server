@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-24 12:41:34
+ * @Last Modified time: 2017-03-27 11:21:52
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -73,6 +73,16 @@ export var getCurrentPage = (req, res, next) => {
     });
 
 };
+
+export var getCurrentCompanyDetail = (req, res, next) => {
+    var name = req.body.name;
+    Company.findOne({ name: name }).then(doc => {
+        res.json(doc);
+    }).catch(err => {
+        res.json({});
+    })
+}
+
 
 // 投递简历   这里需要引入 socket.io
 export var delivery = (req, res, next) => {
