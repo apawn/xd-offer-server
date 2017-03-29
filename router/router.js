@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-27 11:21:52
+ * @Last Modified time: 2017-03-29 12:29:18
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -108,6 +108,36 @@ export var invite = (req, res, next) => {
     })
 }
 
+
+// 评价公司
+
+export var commentCompany = (req, res, next) => {
+    var email = req.body.companyemail,
+        content = req.body.content;
+
+    Company.update({ email: email }, {
+        $push: {
+            comments: { content: content, time: new Date().toLocaleDateString() }
+        }
+    }).then(result => {
+        res.json(result);
+    }).catch(err => {
+        res.json(err);
+    })
+}
+
+export var delivery = (req, res, next) => {
+    var studentEmail = req.body.studentEmail,
+        companyemail = req.body.companyEmail;
+    Company.update({ email: email }, {
+        $push: {
+            "position.delivery": {
+                email: studentEmail,
+                time: new Date().toLocaleDateString()
+            }
+        }
+    })
+}
 
 
 

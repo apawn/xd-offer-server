@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-20 14:13:46 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-24 09:53:44
+ * @Last Modified time: 2017-03-29 10:35:42
  */
 
 import mongoose from 'mongoose';
@@ -21,10 +21,10 @@ var Company = new mongoose.Schema({
     invitation: [{ student: String, position: String, time: Date }],    //  发出的邀请
     received: [{ student: String, position: String, time: Date }],     // 接受到的邀请
     message: [{ Content: String, time: Date, hasread: Boolean }],   //  content ,date ,has read
-    comments: [{ content: String, time: Date, author: String }]
+    comments: [{ content: String, time: Date }]
 })
 
-// 这里真是一个大坑
+// 这里真是一个大坑, 如果是自己建的数据库, 一定要写第三个参数,否则 mongoose会自动在第一个参数后面加 s 作为数据库名.
 export default mongoDb.model('company', Company, 'company');
 
 
