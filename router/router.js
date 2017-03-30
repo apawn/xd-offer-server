@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-29 12:29:18
+ * @Last Modified time: 2017-03-30 17:57:36
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -83,18 +83,79 @@ export var getCurrentCompanyDetail = (req, res, next) => {
     })
 }
 
-
-// 投递简历   这里需要引入 socket.io
 export var delivery = (req, res, next) => {
-    var companyEmail = req.body.companyEmail,
-        user = req.session.user;
-    Company.findOne({ email: companyEmail }).then(doc => {
-        // 得到这个公司
-        // doc.update();
+    var studentEmail = req.body.studentEmail,
+        companyemail = req.body.companyemail,
+        position = req.body.position;
+    Company.findOne({ email: companyemail }).then(doc => {
+        if (!doc) {
+            res.json({})
+        } else {
+            var positions = doc.position;
+            for (let i = 0, l = positions.length; i < l; i++) {
+                if (positions[i].name === position) {
+                    console.log(studentEmail)
+                    doc.position[i].received.push({
+                        "studentEmail": studentEmail,
+                        "time": '5555'
+                    })
+                    doc.save().then(result => {
+                        Student.update({ email: studentEmail }, {
+                            $push: {
+                                "resumeDelivered": {
+                                    email: companyemail,
+                                    position: position,
+                                    time: new Date().toLocaleDateString()
+                                }
+                            }
+                        }).then(result => {
+                            res.json({
+                                ok: true,
+                                company: doc
+                            })
+                        })
+                    }).catch(err => {
+                        res.json({});
+                    });
+                    break;
+                }
+            }
+        }
     }).catch(err => {
+        res.json({})
+    })
 
-    });
-};
+
+    // Company.update({ email: companyemail }, {
+    //     $push: {
+    //         "position.received": {
+    //             email: studentEmail,
+    //             time: new Date().toLocaleDateString()
+    //         }
+    //     }
+    // }).then(result => {
+    //     // console.log(result);
+
+    //     Student.update({ email: studentEmail }, {
+    //         $push: {
+    //             "resumeDelivered": {
+    //                 email: companyemail,
+    //                 position: position,
+    //                 time: new Date().toLocaleDateString()
+    //             }
+    //         }
+    //     })
+    // }).then(result => {
+    //     console.log(result);
+    //     res.json({
+    //         ok: true
+    //     })
+    // }).catch(err => {
+    //     res.json({
+    //         ok: false
+    //     })
+    // })
+}
 
 export var invite = (req, res, next) => {
     var company = req.session.company,
@@ -126,18 +187,7 @@ export var commentCompany = (req, res, next) => {
     })
 }
 
-export var delivery = (req, res, next) => {
-    var studentEmail = req.body.studentEmail,
-        companyemail = req.body.companyEmail;
-    Company.update({ email: email }, {
-        $push: {
-            "position.delivery": {
-                email: studentEmail,
-                time: new Date().toLocaleDateString()
-            }
-        }
-    })
-}
+
 
 
 

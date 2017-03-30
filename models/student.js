@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-20 10:33:36 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-23 12:13:02
+ * @Last Modified time: 2017-03-29 15:34:45
  */
 
 import mongoose from 'mongoose';
@@ -22,7 +22,7 @@ var Student = new mongoose.Schema({
     introduction: String,
     resumePath: String,
     //  private 
-    resumeDelivered: [{ name: String, position: String, time: Date }],  // the companies has delivered resume, include company ,job
+    resumeDelivered: [{ email: String, position: String, time: Date }],  // the companies has delivered resume, include company ,job
     getInvations: [{ company: String, position: String, time: Date }],    // the companies which student has get invations from , include company ,job
     message: [{ content: String, time: Date, hasread: Boolean }],        // content date hasRead 
     comments: [{ content: String, time: Date, company: "" }]
