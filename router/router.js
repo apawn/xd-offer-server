@@ -2,12 +2,13 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-30 17:57:36
+ * @Last Modified time: 2017-04-10 11:34:31
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
 
 import Official from '../models/official.js'
+import sendmailer from '../tools/sendmail.js'
 
 export var signIn = function (req, res, next) {
     var email = req.body.email,
@@ -124,37 +125,6 @@ export var delivery = (req, res, next) => {
     }).catch(err => {
         res.json({})
     })
-
-
-    // Company.update({ email: companyemail }, {
-    //     $push: {
-    //         "position.received": {
-    //             email: studentEmail,
-    //             time: new Date().toLocaleDateString()
-    //         }
-    //     }
-    // }).then(result => {
-    //     // console.log(result);
-
-    //     Student.update({ email: studentEmail }, {
-    //         $push: {
-    //             "resumeDelivered": {
-    //                 email: companyemail,
-    //                 position: position,
-    //                 time: new Date().toLocaleDateString()
-    //             }
-    //         }
-    //     })
-    // }).then(result => {
-    //     console.log(result);
-    //     res.json({
-    //         ok: true
-    //     })
-    // }).catch(err => {
-    //     res.json({
-    //         ok: false
-    //     })
-    // })
 }
 
 export var invite = (req, res, next) => {
@@ -187,6 +157,21 @@ export var commentCompany = (req, res, next) => {
     })
 }
 
+export var getVertifyCode = (req, res, next) => {
+    var email = req.body.email;
+    var code = Math.random().toString().slice(-5);
+    // 放入session中。
+    req.session.veitifycode = code;
+    // var promise = sendmailer(code, email);
+
+    // promise.then(info => {
+    //     res.json({ ok: true })
+    // }).catch(err => {
+    //     res.json({ ok: false })
+    // })
+    console.log(req.session.veitifycode);
+    res.json({ ok: true });
+}
 
 
 
