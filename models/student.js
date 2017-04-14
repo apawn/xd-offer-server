@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-20 10:33:36 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-03-29 15:34:45
+ * @Last Modified time: 2017-04-14 12:04:13
  */
 
 import mongoose from 'mongoose';
@@ -15,6 +15,9 @@ var Student = new mongoose.Schema({
     gender: Number,
     email: String,
     phone: String,
+    // 学院
+    college: String,
+    // 专业
     speciality: String,
     skill: [String],
     prizes: [{ content: String, time: Date }], // include string and date Schema.Types.Mixed

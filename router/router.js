@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-04-10 11:34:31
+ * @Last Modified time: 2017-04-12 11:47:19
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -46,8 +46,7 @@ export var signIn = function (req, res, next) {
         });
 };
 
-// 注册,这个最难搞 !!!
-export var signUp = function (req, res, next) { };
+
 export var signOut = function (req, res, next) {
     req.session.user = null;
 };
@@ -161,7 +160,7 @@ export var getVertifyCode = (req, res, next) => {
     var email = req.body.email;
     var code = Math.random().toString().slice(-5);
     // 放入session中。
-    req.session.veitifycode = code;
+    req.session.vertifyCode = code;
     // var promise = sendmailer(code, email);
 
     // promise.then(info => {
@@ -169,11 +168,59 @@ export var getVertifyCode = (req, res, next) => {
     // }).catch(err => {
     //     res.json({ ok: false })
     // })
-    console.log(req.session.veitifycode);
+    console.log(req.session.vertifyCode);
     res.json({ ok: true });
 }
 
-
+export const signUp = (req, res, next) => {
+    var name = req.body.name,
+        email = req.body.email,
+        password = req.body.password,
+        vertifyCode = req.body.vertifyCode;
+    console.log(req.session);
+    console.log(vertifyCode);
+    var sessionCode = req.session.vertifyCode;
+    console.log(sessionCode);
+    sessionCode = "11111"
+    if (vertifyCode != sessionCode) {
+        res.json({
+            //  0 代表验证码不正确
+            ok: 0
+        })
+    } else {
+        Student.findOne({ email }).then(doc => {
+            // 如果已经注册过
+            if (doc) {
+                res.json({
+                    // 1 代表已经该邮箱已经注册过
+                    ok: 1
+                });
+            } else {
+                // 还没有注册，那么现在注册
+                Student.insertMany([{
+                    name: name, password: password, email: email
+                }]).then(result => {
+                    res.json({
+                        // 2 代表注册成功 。
+                        ok: 2
+                    })
+                }).catch(err => {
+                    console.log(err);
+                    res.json({
+                        // 代表出错
+                        ok: -1
+                    })
+                })
+            }
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                // 代表出错
+                ok: -1
+            })
+        })
+    }
+}
 
 
 // new mongoose.Schema({

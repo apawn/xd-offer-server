@@ -13,13 +13,17 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // cookie
-app.use(cookieParser());
+// app.use(cookieParser({
+//     secret: 'keyboard cat'
+// }));
 // session
 app.use(expressSession({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true
 }));
+
+
 // static
 app.use(express.static(__dirname + './dist'));
 app.use(express.static(__dirname + './uploads'));

@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:42 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-04-10 11:15:12
+ * @Last Modified time: 2017-04-12 10:01:52
  */
 import express from 'express';
 import {
@@ -22,5 +22,6 @@ router.post('/api/companydetail', getCurrentCompanyDetail);
 router.post('/api/commentcompany', commentCompany);
 router.post('/api/delivery', delivery);
 router.post('/api/getvertifycode', getVertifyCode);
+router.post('/api/signup', signUp);
 
 export default router;
