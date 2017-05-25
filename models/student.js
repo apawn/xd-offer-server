@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-20 10:33:36 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-04-14 12:04:13
+ * @Last Modified time: 2017-04-19 12:42:55
  */
 
 import mongoose from 'mongoose';
@@ -11,17 +11,20 @@ import mongoDb from './db.js';
 var Student = new mongoose.Schema({
     name: String,
     password: String,
-    birthday: Date,
-    gender: Number,
+    birthday: String,
+    gender: String,
     email: String,
     phone: String,
     // 学院
-    college: String,
+    collage: String,
     // 专业
     speciality: String,
-    skill: [String],
-    prizes: [{ content: String, time: Date }], // include string and date Schema.Types.Mixed
-    experience: [{ content: String, start: Date, end: Date, mainwork: String }],  // include company startdate, endDate, main work.
+    //  最高学历
+    highest: String,
+    skills: [String],
+    prize: [{ content: String, time: String }], // include string and date Schema.Types.Mixed
+    eduction: [{ content: String, start: String, end: String }],
+    pratice: [{ content: String, start: String, end: String, mainwork: String }],  // include company startdate, endDate, main work.
     introduction: String,
     resumePath: String,
     //  private 
@@ -33,3 +36,7 @@ var Student = new mongoose.Schema({
 
 export default mongoDb.model('student', Student);
 
+            // skills: body.skills,
+            // prize: body.prize,
+            // pratice: body.pratice,
+            // eduction: body.eduction,

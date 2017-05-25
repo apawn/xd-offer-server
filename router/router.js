@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-04-12 11:47:19
+ * @Last Modified time: 2017-04-19 11:57:22
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -222,6 +222,54 @@ export const signUp = (req, res, next) => {
     }
 }
 
+
+export const completeBasicInfo = (req, res, next) => {
+    var body = req.body;
+    Student.findOne({ email: body.email }).update({
+        $set: {
+            birthday: body.birthday,
+            phone: body.phone,
+            collage: body.collage,
+            speciality: body.speciality,
+            highest: body.highest,
+            gender: body.gender,
+            introduction: body.introduction,
+            collage: body.collage
+        }
+    }, doc => {
+        res.json({
+            ok: true
+        })
+    })
+
+}
+export const completeKeyInfo = (req, res, next) => {
+    var body = req.body;
+    console.log(body);
+    Student.findOne({ email: body.email }).update({
+        $set: {
+            skills: body.skills,
+            prize: body.prize,
+            pratice: body.pratice,
+            eduction: body.eduction,
+        }
+    }, doc => {
+        console.log(doc);
+        res.json({
+            ok: true
+        })
+    });
+
+}
+
+
+//   birthday: '',
+//                 phone: '15845565860',
+//                 collage: "软件学院",
+//                 specity: "软件工程",
+//                 highest: 'undergraduate',
+//                 gender: 'male',
+//                 introduction: "工作：认真负责，踏实稳重，具有很强的团队合作精神； 学习：求知欲强，勤奋好学，学习能力强； 生活：热爱生活，为人正直善良，积极进取，敢于挑战自我。"
 
 // new mongoose.Schema({
 //     name: String,        // 公司名
