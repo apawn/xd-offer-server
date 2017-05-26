@@ -2,10 +2,11 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-04-19 11:57:22
+ * @Last Modified time: 2017-05-26 12:49:33
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
+import News from '../models/news.js'
 
 import Official from '../models/official.js'
 import sendmailer from '../tools/sendmail.js'
@@ -262,49 +263,94 @@ export const completeKeyInfo = (req, res, next) => {
 
 }
 
+// 管理员部分
+export const getAllNews = (req, res, next) => {
+    News.find({}).then(docs => {
+        res.json(docs)
+    }).catch(e => {
+        res.json([])
+    })
+}
 
-//   birthday: '',
-//                 phone: '15845565860',
-//                 collage: "软件学院",
-//                 specity: "软件工程",
-//                 highest: 'undergraduate',
-//                 gender: 'male',
-//                 introduction: "工作：认真负责，踏实稳重，具有很强的团队合作精神； 学习：求知欲强，勤奋好学，学习能力强； 生活：热爱生活，为人正直善良，积极进取，敢于挑战自我。"
+export const addNews = (req, res, next) => {
+    var news = req.body.news;
+    News.insertMany([{
+        id: news.id,
+        header: news.header,
+        content: news.content,
+        time: news.time
+    }]).then(docs => {
+        res.json({ ok: 1 })
+    }).catch(e => {
+        res.json({ ok: 0 })
+    })
+}
 
-// new mongoose.Schema({
-//     name: String,        // 公司名
-//     desc: String,
-//     password: String,    // 密码
-//     path: String,         // 招聘简章路径
-//     email: String,       // 邮箱
-//     phone: String,      // 电话
-//     location: [String],  // 工作地点
-//     number: Number,      // 招聘人数
-//     position: [{ name: String, job: String, salary: String }],  // 岗位,职责&要求  薪水
-//     invitation: [{ student: String, position: String, time: Date }],    //  发出的邀请
-//     received: [{ student: String, position: String, time: Date }],     // 接受到的邀请
-//     message: [{ Content: String, time: Date, hasread: Boolean }],   //  content ,date ,has read
-//     comments: [{ content: String, time: Date, author: String }]
-// })
+export const removeNews = (req, res, next) => {
+    var id = req.body.id;
+    News.remove({ id: id }).then(docs => {
+        res.json({ ok: 1 })
+    }).catch(e => {
+        res.json({ ok: 0 })
+    })
+}
+
+export const updateNews = (req, res, next) => {
+    var news = req.body.news;
+    News.update({ id: news.id }, news).then(doc => {
+        res.json({ ok: 1 });
+    }).catch(e => {
+        res.json({ OK: 0 });
+    })
+}
+
+export const removeStudent = (req, res, next) => {
+    var email = req.body.email,
+        name = req.body.name;
+    Student.remove({ email: email, name: name }).then(doc => {
+        res.json({ ok: 1 });
+    }).catch(e => {
+        res.json({ OK: 0 });
+    })
+}
+
+export const removeCompany = (req, res, next) => {
+    var email = req.body.email,
+        name = req.body.name;
+    Company.remove({ email: email, name: name }).then(doc => {
+        res.json({ ok: 1 });
+    }).catch(e => {
+        res.json({ OK: 0 });
+    })
+}
 
 
 
-// new mongoose.Schema({
-//     name: String,
-//     password: String,
-//     birthday: Date,
-//     gender: Number,
-//     email: String,
-//     phone: String,
-//     speciality: String,
-//     skill: [String],
-//     prizes: [{ content: String, time: Date }], // include string and date Schema.Types.Mixed
-//     experience: [{ content: String, start: Date, end: Date, mainwork: String }],  // include company startdate, endDate, main work.
-//     introduction: String,
-//     resumePath: String,
-//     //  private 
-//     resumeDelivered: [{ name: String, position: String, time: Date }],  // the companies has delivered resume, include company ,job
-//     getInvations: [{ company: String, position: String, time: Date }],    // the companies which student has get invations from , include company ,job
-//     message: [{ content: String, time: Date, hasread: Boolean }],        // content date hasRead 
-//     comments: [{ content: String, time: Date, company: "" }]
-// })
+
+
+
+
+
+// 企业部分
+// 得到学生个数
+export var getStudentCount = (req, res, next) => {
+    var count = Student.count().then(count => {
+        res.json({ count });
+    }).catch(err => {
+        res.json({ count: 0 });
+    });
+};
+
+export var getCurrentPageStudent = (req, res, next) => {
+    var page = req.body.page - 0,
+        onePageCount = 5;
+
+    if (page < 1) {
+        page = 1;
+    }
+    Student.find({}).skip(onePageCount * (page - 1)).limit(onePageCount).then(docs => {
+        res.json(docs);
+    }).catch(err => {
+        res.json(null);
+    });
+};
