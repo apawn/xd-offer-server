@@ -25,7 +25,9 @@ app.use(expressSession({
 
 
 // static
+app.use(express.static('static'));
 app.use(express.static(__dirname + './dist'));
+
 app.use(express.static(__dirname + './uploads'));
 app.use(router);
 

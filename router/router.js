@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-05-26 12:49:33
+ * @Last Modified time: 2017-05-26 15:38:13
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
