@@ -2,13 +2,12 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:42 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-05-26 16:17:17
+ * @Last Modified time: 2017-05-27 22:38:39
  */
 import express from 'express';
 import {
     signIn, signUp, signOut, getCurrentPage, getCompaniesCount, getCurrentCompanyDetail, commentCompany
-    , delivery, getVertifyCode, completeBasicInfo, completeKeyInfo, getAllNews, addNews, removeNews, updateNews,
-    removeStudent, removeCompany, getStudentCount, getCurrentPageStudent
+    , delivery, getVertifyCode, completeBasicInfo, completeKeyInfo, getAllNews, addNews, removeNews, updateNews, removeStudent, removeCompany, getStudentCount, getCurrentPageStudent, getStudentDetail
 } from './router.js';
 var router = express.Router();
 
@@ -28,5 +27,13 @@ router.post('/api/completebasicinfo', completeBasicInfo);
 router.post('/api/completekeyinfo', completeKeyInfo);
 router.post('/api/getallnews', getAllNews);
 
+// 管理员部分
+router.post('/api/removecompany', removeCompany);
+router.post('/api/removestudent', removeStudent);
+router.post('/api/studentdetail', getStudentDetail);
+router.post('/api/getstudentscount', getStudentCount);
+router.post('/api/getcurrentstudentpage', getCurrentPageStudent);
+
 export default router;
+
 

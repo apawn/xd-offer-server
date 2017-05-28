@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-05-26 15:38:13
+ * @Last Modified time: 2017-05-27 22:47:33
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -304,32 +304,20 @@ export const updateNews = (req, res, next) => {
     })
 }
 
-export const removeStudent = (req, res, next) => {
-    var email = req.body.email,
-        name = req.body.name;
-    Student.remove({ email: email, name: name }).then(doc => {
-        res.json({ ok: 1 });
-    }).catch(e => {
-        res.json({ OK: 0 });
-    })
-}
+
 
 export const removeCompany = (req, res, next) => {
     var email = req.body.email,
         name = req.body.name;
+    console.log(name);
+    console.log(email);
+
     Company.remove({ email: email, name: name }).then(doc => {
         res.json({ ok: 1 });
     }).catch(e => {
         res.json({ OK: 0 });
     })
 }
-
-
-
-
-
-
-
 
 // 企业部分
 // 得到学生个数
@@ -343,7 +331,7 @@ export var getStudentCount = (req, res, next) => {
 
 export var getCurrentPageStudent = (req, res, next) => {
     var page = req.body.page - 0,
-        onePageCount = 5;
+        onePageCount = 7;
 
     if (page < 1) {
         page = 1;
@@ -354,3 +342,24 @@ export var getCurrentPageStudent = (req, res, next) => {
         res.json(null);
     });
 };
+
+
+export const removeStudent = (req, res, next) => {
+    var email = req.body.email;
+    console.log(email);
+    Student.remove({ email: email }).then(doc => {
+        res.json({ ok: 1 });
+    }).catch(e => {
+        res.json({ OK: 0 });
+    })
+}
+
+export const getStudentDetail = (req, res, next) => {
+    var email = req.body.email;
+
+    Student.find({ email: email }).then(doc => {
+        res.json({ "student": doc })
+    }).catch(e => {
+        res.json(null)
+    })
+}
