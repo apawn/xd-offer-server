@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-05-27 22:47:33
+ * @Last Modified time: 2017-05-29 18:00:06
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -10,6 +10,7 @@ import News from '../models/news.js'
 
 import Official from '../models/official.js'
 import sendmailer from '../tools/sendmail.js'
+import dateFormat from 'dateformat';
 
 export var signIn = function (req, res, next) {
     var email = req.body.email,
@@ -263,9 +264,23 @@ export const completeKeyInfo = (req, res, next) => {
 
 }
 
-// 管理员部分
+// ------------管理员部分-------------------
+
+export const removeCompany = (req, res, next) => {
+    var email = req.body.email,
+        name = req.body.name;
+    console.log(name);
+    console.log(email);
+
+    Company.remove({ email: email, name: name }).then(doc => {
+        res.json({ ok: 1 });
+    }).catch(e => {
+        res.json({ OK: 0 });
+    })
+}
+
 export const getAllNews = (req, res, next) => {
-    News.find({}).then(docs => {
+    News.find({}).sort({ time: 1 }).then(docs => {
         res.json(docs)
     }).catch(e => {
         res.json([])
@@ -273,12 +288,14 @@ export const getAllNews = (req, res, next) => {
 }
 
 export const addNews = (req, res, next) => {
-    var news = req.body.news;
+    var news = req.body.news,
+        now = new Date(),
+        date = dateFormat(now, 'yyyy-mm-dd');
     News.insertMany([{
+        time: date,
         id: news.id,
         header: news.header,
-        content: news.content,
-        time: news.time
+        content: news.content
     }]).then(docs => {
         res.json({ ok: 1 })
     }).catch(e => {
@@ -288,6 +305,7 @@ export const addNews = (req, res, next) => {
 
 export const removeNews = (req, res, next) => {
     var id = req.body.id;
+    console.log(id);
     News.remove({ id: id }).then(docs => {
         res.json({ ok: 1 })
     }).catch(e => {
@@ -306,18 +324,6 @@ export const updateNews = (req, res, next) => {
 
 
 
-export const removeCompany = (req, res, next) => {
-    var email = req.body.email,
-        name = req.body.name;
-    console.log(name);
-    console.log(email);
-
-    Company.remove({ email: email, name: name }).then(doc => {
-        res.json({ ok: 1 });
-    }).catch(e => {
-        res.json({ OK: 0 });
-    })
-}
 
 // 企业部分
 // 得到学生个数

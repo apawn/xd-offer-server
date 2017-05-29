@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:42 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-05-27 22:38:39
+ * @Last Modified time: 2017-05-28 22:02:31
  */
 import express from 'express';
 import {
@@ -33,6 +33,11 @@ router.post('/api/removestudent', removeStudent);
 router.post('/api/studentdetail', getStudentDetail);
 router.post('/api/getstudentscount', getStudentCount);
 router.post('/api/getcurrentstudentpage', getCurrentPageStudent);
+
+router.post('/api/getallnews', getAllNews);
+router.post('/api/removenews', removeNews);
+router.post('/api/addnews', addNews);
+router.post('/api/updatenews', updateNews);
 
 export default router;
 
