@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-05-29 18:00:06
+ * @Last Modified time: 2017-06-01 21:17:12
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -125,18 +125,6 @@ export var delivery = (req, res, next) => {
         }
     }).catch(err => {
         res.json({})
-    })
-}
-
-export var invite = (req, res, next) => {
-    var company = req.session.company,
-        studentEmail = req.body.email;
-
-    Student.find({ email: studentEmail }).then(doc => {
-        //doc
-        // doc.update();...
-    }).catch(err => {
-
     })
 }
 
@@ -362,10 +350,101 @@ export const removeStudent = (req, res, next) => {
 
 export const getStudentDetail = (req, res, next) => {
     var email = req.body.email;
-
     Student.find({ email: email }).then(doc => {
         res.json({ "student": doc })
     }).catch(e => {
         res.json(null)
+    })
+}
+
+export const getInvitedStudents = (req, res, next) => {
+    var companyEmail = req.body.email;
+    // var companyEmail = 'test2@qq.com';
+    Company.findOne({ email: companyEmail }).then(doc => {
+        var invitedStudents = doc.invatation || [];
+        // invitedStudents.map(item => { console.log(item.time) });
+        Student.where('email').in(invitedStudents.map(item => item.email)).then(docs => {
+            res.json(docs);
+        }).catch(err => {
+            res.json([]);
+        })
+    }).catch(err => {
+        res.json([]);
+    })
+}
+
+export const inviteStudent = (req, res, next) => {
+    var studentEmail = req.body.studentEmail,
+        companyEmail = req.body.companyEmail;
+
+    Company.update({ email: companyEmail }, {
+        $push: {
+            "invatation": {
+                email: studentEmail,
+                time: new Date().toLocaleDateString()
+            }
+        }
+    }).then(doc => {
+        Student.update({ email: studentEmail }, {
+            $push: {
+                "getInvations": {
+                    email: companyEmail,
+                    time: new Date().toLocaleDateString()
+                }
+            }
+        }).then(_doc => {
+            console.log(_doc);
+            res.json({
+                ok: true
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                ok: false
+            })
+        })
+
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            ok: false
+        })
+    })
+}
+export const getDeliveriedStudents = (req, res, next) => {
+    var companyEmail = req.body.email;
+    Company.findOne({ email: companyEmail }).then(doc => {
+        var receivedStudents = doc.received;
+
+        Student.where('email').in(receivedStudents.map(item => item.email)).then(docs => {
+            res.json(docs);
+        }).catch(err => {
+            res.json([]);
+        })
+    }).catch(err => {
+        res.json([]);
+    })
+}
+
+
+export const companySignIn = (req, res, next) => {
+    var name = req.body.email,
+        pwd = req.body.password,
+        result = {};
+    console.log(name + "-----" + pwd);
+    Company.findOne({
+        password: pwd,
+        email: name
+    }).then(doc => {
+        if (doc) {
+            result.ok = true;
+            result.result = doc;
+        } else {
+            result.ok = false;
+            result.result = {};
+        }
+        res.json(result);
+    }).catch(err => {
+        res.json({ ok: false, result: {} })
     })
 }
