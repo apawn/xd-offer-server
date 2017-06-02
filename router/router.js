@@ -2,7 +2,7 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:45 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-06-01 21:17:12
+ * @Last Modified time: 2017-06-02 19:49:28
  */
 import Student from '../models/student.js'
 import Company from '../models/company.js'
@@ -85,48 +85,7 @@ export var getCurrentCompanyDetail = (req, res, next) => {
     })
 }
 
-export var delivery = (req, res, next) => {
-    var studentEmail = req.body.studentEmail,
-        companyemail = req.body.companyemail,
-        position = req.body.position;
-    Company.findOne({ email: companyemail }).then(doc => {
-        if (!doc) {
-            res.json({})
-        } else {
-            var positions = doc.position;
-            for (let i = 0, l = positions.length; i < l; i++) {
-                if (positions[i].name === position) {
-                    console.log(studentEmail)
-                    doc.position[i].received.push({
-                        "studentEmail": studentEmail,
-                        "time": '5555'
-                    })
-                    doc.save().then(result => {
-                        Student.update({ email: studentEmail }, {
-                            $push: {
-                                "resumeDelivered": {
-                                    email: companyemail,
-                                    position: position,
-                                    time: new Date().toLocaleDateString()
-                                }
-                            }
-                        }).then(result => {
-                            res.json({
-                                ok: true,
-                                company: doc
-                            })
-                        })
-                    }).catch(err => {
-                        res.json({});
-                    });
-                    break;
-                }
-            }
-        }
-    }).catch(err => {
-        res.json({})
-    })
-}
+
 
 
 // 评价公司
@@ -350,7 +309,7 @@ export const removeStudent = (req, res, next) => {
 
 export const getStudentDetail = (req, res, next) => {
     var email = req.body.email;
-    Student.find({ email: email }).then(doc => {
+    Student.findOne({ email: email }).then(doc => {
         res.json({ "student": doc })
     }).catch(e => {
         res.json(null)
@@ -448,3 +407,77 @@ export const companySignIn = (req, res, next) => {
         res.json({ ok: false, result: {} })
     })
 }
+
+
+// 学生查看邀请 和 投递简历
+
+export const studentGetInvitations = (req, res, next) => {
+    var studentEmail = req.body.email;
+    Student.findOne({ email: studentEmail }).then(doc => {
+        if (doc) {
+            var invations = doc.getInvations.map(item => item.email);
+            Company.where('email').in(invations).then(docs => {
+                res.json(docs);
+            }).catch(err => {
+                console.log(err);
+                res.json(null);
+            })
+        }
+    }).catch(err => {
+        console.log(err);
+        res.json(null);
+    })
+}
+
+export const studentHasDeliveried = (req, res, next) => {
+    var studentEmail = "test@qq.com";
+
+    Student.findOne({ email: studentEmail }).then(doc => {
+        if (doc) {
+            var deliveried = doc.resumeDelivered.map(item => item.email);
+            Company.where('email').in(deliveried).then(docs => {
+                res.json(docs);
+            }).catch(err => {
+                console.log(err);
+                res.json(null);
+            })
+        }
+    }).catch(err => {
+        console.log(err);
+        res.json(null);
+    })
+}
+
+export var delivery = (req, res, next) => {
+    var studentEmail = req.body.studentEmail,
+        companyEmail = req.body.companyemail,
+        position = req.body.position;
+    console.log(companyEmail);
+    Student.update({ email: studentEmail }, {
+        $push: {
+            "resumeDelivered": {
+                email: companyEmail,
+                position: position,
+                time: new Date().toLocaleDateString()
+            }
+        }
+    }).then(result => {
+        Company.update({ email: companyEmail }, {
+            $push: {
+                "received": {
+                    email: studentEmail,
+                    position: position,
+                    time: new Date().toLocaleDateString()
+                }
+            }
+        }).then(result => {
+            res.json({ ok: true });
+        }).catch(err => {
+            console.log(err);
+            res.json({ ok: false });
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({ ok: false });
+    })
+}    

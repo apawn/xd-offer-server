@@ -2,13 +2,14 @@
  * @Author: Pawn.Hu 
  * @Date: 2017-03-21 16:21:42 
  * @Last Modified by: Pawn.Hu
- * @Last Modified time: 2017-06-01 16:56:49
+ * @Last Modified time: 2017-06-02 16:14:09
  */
 import express from 'express';
 import {
     signIn, signUp, signOut, getCurrentPage, getCompaniesCount, getCurrentCompanyDetail, commentCompany
     , delivery, getVertifyCode, completeBasicInfo, completeKeyInfo, getAllNews, addNews, removeNews, updateNews, removeStudent, removeCompany, getStudentCount, getCurrentPageStudent, getStudentDetail,
-    getDeliveriedStudents, getInvitedStudents, inviteStudent, companySignIn
+    getDeliveriedStudents, getInvitedStudents, inviteStudent, companySignIn, studentHasDeliveried,
+    studentGetInvitations
 } from './router.js';
 var router = express.Router();
 
@@ -49,6 +50,11 @@ router.post('/api/invitestudent', inviteStudent);
 
 router.post('/api/companylogin', companySignIn);
 
+
+// 学生补充
+
+router.post('/api/studentGetInvitations', studentGetInvitations);
+router.post('/api/studentHasDeliveried', studentHasDeliveried);
 export default router;
 
 
